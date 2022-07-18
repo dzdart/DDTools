@@ -2,7 +2,7 @@
 
 
 # 目前已有的功能
-- 顶部菜单栏\
+- 顶部菜单栏
   * SwitchLanguage(编辑器语言在中文和英文之间随时切换)\
   * GoToProject（前往项目GitHub主页）
 - ContentBrowser右键菜单
