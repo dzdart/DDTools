@@ -3,6 +3,7 @@
 
 #include "GenMenu/ContentBrowserMenu.h"
 #include "DDToolsBPLibrary.h"
+#include "DDToolsStyle.h"
 
 ContentBrowserMenu::ContentBrowserMenu()
 {
@@ -24,6 +25,8 @@ ContentBrowserMenu& ContentBrowserMenu::Get()
 
 void ContentBrowserMenu::GenMenu()
 {
+	FDDToolsStyle::Initialized();
+	FDDToolsStyle::ReloadTextures();
 	CreateContentBrowserMenu();
 }
 
@@ -52,7 +55,7 @@ void ContentBrowserMenu::MenuExtension(FMenuBuilder& MenuBuilder)
 		FText::FromString(TEXT("DDToolsBox")),
 		FNewMenuDelegate::CreateRaw(this,&ContentBrowserMenu::CreateSubMenu),
 		false,
-		FSlateIcon(),
+		FSlateIcon(FDDToolsStyle::GetStyleSetName(),"DDTools.mountAction"),
 		true,
 		"DDTools"
 	);
@@ -61,20 +64,23 @@ void ContentBrowserMenu::MenuExtension(FMenuBuilder& MenuBuilder)
 
 void ContentBrowserMenu::CreateSubMenu(FMenuBuilder& Builder)
 {
-	/*Fix TextureSampler 16*/
-	Builder.AddMenuEntry(
-		FText::FromString(TEXT("FixTextureSanpler16")),
-		FText::FromString(TEXT("修复材质球中贴图超过16张的报错")),
-		FSlateIcon(),
-		FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::FixTextureSampler16))
-	);
-	/*OpenMaterialRayTraceShadow*/
-	Builder.AddMenuEntry(
-		FText::FromString(TEXT("OpenMaterialRayTraceShadow")),
-		FText::FromString(TEXT("开启材质球的光追阴影")),
-		FSlateIcon(),
-		FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::OpenMaterialRayTraceShadow))
-	);
+	if (SelectAssetData[0].AssetClass==FName("Material")) 
+	{
+		/*Fix TextureSampler 16*/
+		Builder.AddMenuEntry(
+			FText::FromString(TEXT("FixTextureSanpler16")),
+			FText::FromString(TEXT("修复材质球中贴图超过16张的报错")),
+			FSlateIcon(),
+			FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::FixTextureSampler16))
+		);
+		/*OpenMaterialRayTraceShadow*/
+		Builder.AddMenuEntry(
+			FText::FromString(TEXT("OpenMaterialRayTraceShadow")),
+			FText::FromString(TEXT("开启材质球的光追阴影")),
+			FSlateIcon(),
+			FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::OpenMaterialRayTraceShadow))
+		);
+	}
 }
 
 void ContentBrowserMenu::FixTextureSampler16()

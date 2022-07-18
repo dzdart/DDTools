@@ -43,6 +43,7 @@ public class DDTools : ModuleRules
                 "RenderCore",
                 "UMG",
                 "ContentBrowser",
+				"Projects",
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);
