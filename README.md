@@ -3,8 +3,8 @@
 
 # 目前已有的功能
 - 顶部菜单栏\
-  SwitchLanguage(编辑器语言在中文和英文之间随时切换)\
-	GoToProject（前往项目GitHub主页）
+  * SwitchLanguage(编辑器语言在中文和英文之间随时切换)\
+  * GoToProject（前往项目GitHub主页）
 - ContentBrowser右键菜单
 	* DDTools(材质球相关)
 		* FixMaterialSampler16（修复材质球贴图超过16张的报错。将材质球以及引用的MaterialFunction内所有TextureSapler节点的类型更改为Warp）
