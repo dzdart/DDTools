@@ -10,6 +10,7 @@
 		* FixMaterialSampler16（修复材质球贴图超过16张的报错。将材质球以及引用的MaterialFunction内所有TextureSapler节点的类型更改为Warp）
 		* OpenMaterialRayTraceShadow（打开材质球的光追阴影开关；仅半透明材质有效，其他类型材质球将会被忽略）
 	* DDTools(StaticMesh相关)
-		* 开发中
+		* 移除所有LOD
+		* 自动生成至LOD8
 	* DDTools（贴图纹理相关）
 		* 开发中

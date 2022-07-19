@@ -66,34 +66,107 @@ void ContentBrowserMenu::CreateSubMenu(FMenuBuilder& Builder)
 {
 	if (SelectAssetData[0].AssetClass==FName("Material")) 
 	{
-		/*Fix TextureSampler 16*/
-		Builder.AddMenuEntry(
-			FText::FromString(TEXT("FixTextureSanpler16")),
-			FText::FromString(TEXT("修复材质球中贴图超过16张的报错")),
-			FSlateIcon(),
-			FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::FixTextureSampler16))
-		);
-		/*OpenMaterialRayTraceShadow*/
-		Builder.AddMenuEntry(
-			FText::FromString(TEXT("OpenMaterialRayTraceShadow")),
-			FText::FromString(TEXT("开启材质球的光追阴影")),
-			FSlateIcon(),
-			FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::OpenMaterialRayTraceShadow))
-		);
+		CreateMaterialMenu(Builder);
+	}
+	if (SelectAssetData[0].AssetClass == FName("StaticMesh"))
+	{
+		CreateStaticMeshMenu(Builder);
+	}
+	if (SelectAssetData[0].AssetClass == FName("Texture2D"))
+	{
+		CreateTextureMenu(Builder);
 	}
 }
 
-void ContentBrowserMenu::FixTextureSampler16()
+void ContentBrowserMenu::CreateMaterialMenu(FMenuBuilder& Builder)
 {
-	UDDToolsBPLibrary::SetMaterialTextureSampler(AssetDatasToUobjects(SelectAssetData),ESamplerSourceMode::SSM_Wrap_WorldGroupSettings);
+	/*Fix TextureSampler 16*/
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("FixTextureSanpler16")),
+		FText::FromString(TEXT("修复材质球中贴图超过16张的报错")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::FixTextureSampler16))
+	);
+	/*OpenMaterialRayTraceShadow*/
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("OpenMaterialRayTraceShadow")),
+		FText::FromString(TEXT("开启材质球的光追阴影")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::OpenMaterialRayTraceShadow))
+	);
 }
 
+void ContentBrowserMenu::CreateTextureMenu(FMenuBuilder& Builder)
+{
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("SetTextureNoMipMap")),
+		FText::FromString(TEXT("设置贴图无MipMap")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::NoneFunction))
+	);
+}
+
+void ContentBrowserMenu::CreateStaticMeshMenu(FMenuBuilder& Builder)
+{
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("RemoveStaticMeshAllLod")),
+		FText::FromString(TEXT("设置静态网格体无LOD")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::RemoveStaticMeshAllLod))
+	);
+
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("AddLodNumTo8")),
+		FText::FromString(TEXT("增加模型Lod数量到8")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::AddMeshLodNumTo8))
+	);
+}
+/*************************************************************************************************/
+/*                                                                                               */
+/*                                                                                               */
+/*                                                                                               */
+/*                                                                                               */
+/*                                  这是一个分割线                                               */
+/*                                                                                               */
+/*                                                                                               */
+/*                                                                                               */
+/*                                                                                               */
+/*************************************************************************************************/
+void ContentBrowserMenu::AddMeshLodNumTo8()
+{
+	TArray<UObject*> objects = AssetDatasToUobjects(SelectAssetData);
+	for (UObject* item:objects)
+	{
+		if (UStaticMesh* mesh=Cast<UStaticMesh>(item)) 
+		{
+			UDDToolsBPLibrary::AddStaticMeshLodNumTo8(mesh);
+		}
+	}
+}
+void ContentBrowserMenu::RemoveStaticMeshAllLod()
+{
+	TArray<UObject*> objects = AssetDatasToUobjects(SelectAssetData);
+	int LodNums = 0;
+	for (UObject* item:objects)
+	{
+		if (UStaticMesh* mesh=Cast<UStaticMesh>(item))
+		{
+			UDDToolsBPLibrary::RemoveStaticMeshAllLod(mesh);
+		}
+	}
+}
+void ContentBrowserMenu::FixTextureSampler16()
+{
+	UDDToolsBPLibrary::SetMaterialTextureSampler(AssetDatasToUobjects(SelectAssetData), ESamplerSourceMode::SSM_Wrap_WorldGroupSettings);
+}
 void ContentBrowserMenu::OpenMaterialRayTraceShadow()
 {
 	TArray<UObject*> objects = AssetDatasToUobjects(SelectAssetData);
 	for (UObject* item:objects) 
 	{
 		UDDToolsBPLibrary::SetMatRayShadow(Cast<UMaterial>(item),true);
+		item->MarkPackageDirty();
 	}
 	
 }

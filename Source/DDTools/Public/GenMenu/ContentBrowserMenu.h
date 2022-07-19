@@ -27,7 +27,22 @@ private:
 	TSharedRef<FExtender>ContentBrowserAssetSelectionMenu(const TArray<FAssetData>& AssetData);
 	void MenuExtension(FMenuBuilder& MenuBuilder);
 	void CreateSubMenu(FMenuBuilder& Builder);
+
+	void NoneFunction() {};
+
+	void CreateMaterialMenu(FMenuBuilder& Builder);
+	void CreateTextureMenu(FMenuBuilder& Builder);
+	void CreateStaticMeshMenu(FMenuBuilder& Builder);
+
 	TArray<UObject*> AssetDatasToUobjects(TArray<FAssetData> InAssetData);
+
+	/*StaticMeshFunctions*/
+	void RemoveStaticMeshAllLod();
+	void AddMeshLodNumTo8();
+
+	/*Texture2DFunctions*/
 	void FixTextureSampler16();
+
+	/*MaterialFunctions*/
 	void OpenMaterialRayTraceShadow();
 };

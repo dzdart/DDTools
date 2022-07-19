@@ -12,7 +12,9 @@ UDDToolsBPLibrary::UDDToolsBPLibrary(const FObjectInitializer& ObjectInitializer
 
 }
 
-//ÉèÖÃ²ÄÖÊ±äÁ¿µÄÃû×ÖºÍ×éĞÅÏ¢
+
+
+//è®¾ç½®æè´¨å˜é‡çš„åå­—å’Œç»„ä¿¡æ¯
 void UDDToolsBPLibrary::SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group)
 {
 	//UMaterialExpression* dd;
@@ -26,7 +28,7 @@ void UDDToolsBPLibrary::SetMaterialParameterName(UMaterialExpressionScalarParame
 
 }
 
-//ÉèÖÃ²ÄÖÊÊÇ·ñÆôÓÃ¹â×·ÒõÓ°
+//è®¾ç½®æè´¨æ˜¯å¦å¯ç”¨å…‰è¿½é˜´å½±
 UMaterial* UDDToolsBPLibrary::SetMatRayShadow(UMaterial* Mat, bool on)
 {
 	if (Mat != nullptr) {
@@ -101,7 +103,7 @@ TArray<UObject*> UDDToolsBPLibrary::ListDir(FString DirPath, bool ListChildDir)
 
 	if (FPaths::DirectoryExists(*ABSPath))
 	{
-		//±éÀú×ÓÎÄ¼ş¼Ğ
+		//éå†å­æ–‡ä»¶å¤¹
 		if (ListChildDir) { MyFileManager.FindFilesRecursive(AssetName, *ABSPath, L"*.uasset", true, false, true); }
 		else { MyFileManager.FindFiles(AssetName, *ABSPath, true, false); }
 
@@ -147,13 +149,13 @@ bool UDDToolsBPLibrary::LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynam
 	FFileHelper::LoadFileToArray(ImageResultData, *ImagePath);
 	FString Ex = FPaths::GetExtension(ImagePath, false);
 
-	//Í¼Æ¬¼ÓÔØÄ£¿é
+	//å›¾ç‰‡åŠ è½½æ¨¡å—
 	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>("ImageWrapper");
 	TSharedPtr<IImageWrapper> ImageWrapperPtr = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
 
 	if (ImageWrapperPtr.IsValid() && ImageWrapperPtr->SetCompressed(ImageResultData.GetData(), ImageResultData.GetAllocatedSize()))
 	{
-		TArray<uint8>* OutData = new TArray<uint8>();//¸ú¸ñÊ½ÎŞ¹ØµÄÑÕÉ«Êı¾İ
+		TArray<uint8>* OutData = new TArray<uint8>();//è·Ÿæ ¼å¼æ— å…³çš„é¢œè‰²æ•°æ®
 
 		ImageWrapperPtr->GetRaw(ERGBFormat::RGBA, 8, *OutData);
 
@@ -203,5 +205,56 @@ bool UDDToolsBPLibrary::LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynam
 
 
 	return true;
+}
+
+PRAGMA_DISABLE_OPTIMIZATION
+void UDDToolsBPLibrary::RemoveStaticMeshLod(UStaticMesh* Mesh, int LodNum)
+{
+	const int IndexLod = Mesh->GetNumLODs();
+	if (LodNum <= IndexLod)
+	{
+		Mesh->RemoveSourceModel(LodNum);
+		Mesh->PostEditChange();
+	}
+	
+	
+}
+
+void UDDToolsBPLibrary::RemoveStaticMeshAllLod(UStaticMesh* Mesh)
+{
+	if (FMessageDialog::Open(EAppMsgType::YesNo, FText::FromString(FString(L"è­¦å‘Šï¼æ­¤æ“ä½œå°†ä¼šç§»é™¤æ‰€æœ‰lodï¼Œä¸”ä¸å¯å›é€€ï¼\n              ç¡®å®šç§»é™¤å—ï¼Ÿ"))) == EAppReturnType::Yes)
+	{
+		int NumLods =0;
+		while (1)
+		{
+			NumLods = Mesh->GetNumLODs();
+			if (NumLods>1)
+			{
+				RemoveStaticMeshLod(Mesh, NumLods - 1);
+				NumLods = Mesh->GetNumLODs();
+			}	
+			if (NumLods == 1) { Mesh->MarkPackageDirty(); break; }
+		}
+	}
+}
+
+void UDDToolsBPLibrary::AddStaticMeshLodNumTo8(UStaticMesh* Mesh)
+{
+	if (Mesh)
+	{
+		if (FMessageDialog::Open(EAppMsgType::YesNo, FText::FromString(FString(L"è­¦å‘Šï¼æ­¤æ“ä½œå°†ä¼šé‡æ–°ç”Ÿæˆæ‰€æœ‰lodï¼Œä¸”ä¸å¯å›é€€ï¼\n              ç¡®å®šç§»é™¤å—ï¼Ÿ"))) == EAppReturnType::Yes)
+		{
+			Mesh->SetNumSourceModels(8);
+			Mesh->PostEditChange();
+			Mesh->MarkPackageDirty();
+		}
+	}
+}
+
+PRAGMA_ENABLE_OPTIMIZATION
+
+void UDDToolsBPLibrary::DDToolsTest(FString Message)
+{
+	FMessageDialog::Debugf(FText::FromString(Message));
 }
 

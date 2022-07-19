@@ -7,6 +7,7 @@
 #include "Engine/Classes/Materials/MaterialExpression.h"
 #include "Engine/Classes/Materials/MaterialExpressionScalarParameter.h"
 #include "Engine/Classes/Engine/Texture2DDynamic.h"
+#include "Runtime/Core/Public/Misc/MessageDialog.h"
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -29,6 +30,8 @@
 UCLASS()
 class UDDToolsBPLibrary : public UBlueprintFunctionLibrary
 {
+public:
+
 	GENERATED_UCLASS_BODY()
 
 	/*材质全球相关方法*/
@@ -52,4 +55,17 @@ class UDDToolsBPLibrary : public UBlueprintFunctionLibrary
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "读取文件到动态贴图", ToolTips = "从本地硬盘读取png文件到动态贴图", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
 	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);
 
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshLod", ToolTips = "移除静态网格体指定LOD", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	static void RemoveStaticMeshLod(UStaticMesh* Mesh,int LodNum);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshAllLod", ToolTips = "移除静态网格体指定LOD", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	static void RemoveStaticMeshAllLod(UStaticMesh* Mesh);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "AddStaticMeshLodNumTo8", ToolTips = "增加模型lod数量至8", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	static void AddStaticMeshLodNumTo8(UStaticMesh* Mesh);
+
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "DDToolsTest", ToolTips = "DDToolsTest", Keywords = "LoadPNGToTexture2DDynamic"), Category = "DDToolsTest")
+	static void DDToolsTest(FString Message);
+
 };
+

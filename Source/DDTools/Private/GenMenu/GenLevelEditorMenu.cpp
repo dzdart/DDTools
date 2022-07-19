@@ -84,6 +84,6 @@ void GenLevelEditorMenu::SwitchLanguage()
 
 void GenLevelEditorMenu::GoToProject()
 {
-	system("explorer https://github.com/dzdart/MegascansPlugin/");
+	system("explorer https://github.com/dzdart/DDTools");
 }
 
