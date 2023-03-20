@@ -1,7 +1,8 @@
 {
-	"BuildId": "19505902",
+	"BuildId": "22491701",
 	"Modules": 
 	{
-		"DDTools": "UnrealEditor-DDTools.dll"
+		"DDTools": "UnrealEditor-DDTools.dll",
+		"MaterialEditorTools": "UnrealEditor-MaterialEditorTools.dll"
 	}
 }

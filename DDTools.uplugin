@@ -19,6 +19,12 @@
 			"Name": "DDTools",
 			"Type": "Runtime",
 			"LoadingPhase": "PreLoadingScreen"
+		},
+		{
+			"Name": "MaterialEditorTools",
+			"Type": "Runtime",
+			"LoadingPhase": "PreLoadingScreen"
 		}
+			
 	]
 }

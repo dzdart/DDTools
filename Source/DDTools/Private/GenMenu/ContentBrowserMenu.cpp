@@ -76,6 +76,11 @@ void ContentBrowserMenu::CreateSubMenu(FMenuBuilder& Builder)
 	{
 		CreateTextureMenu(Builder);
 	}
+
+	if (SelectAssetData[0].AssetClass==FName("EditorUtilityWidgetBlueprint"))
+	{
+		CreateEditorUtilityWidgetBlueprint(Builder);
+	}
 }
 
 void ContentBrowserMenu::CreateMaterialMenu(FMenuBuilder& Builder)
@@ -122,6 +127,22 @@ void ContentBrowserMenu::CreateStaticMeshMenu(FMenuBuilder& Builder)
 		FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::AddMeshLodNumTo8))
 	);
 }
+void ContentBrowserMenu::CreateEditorUtilityWidgetBlueprint(FMenuBuilder& Builder)
+{
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("AddEngineStar")),
+		FText::FromString(TEXT("加入自动启动")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this,&ContentBrowserMenu::AddEngineStar))
+	);
+
+	Builder.AddMenuEntry(
+		FText::FromString(TEXT("RemoveEngineStar")),
+		FText::FromString(TEXT("移除自动启动")),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &ContentBrowserMenu::RemoveEngineStar))
+	);
+}
 /*************************************************************************************************/
 /*                                                                                               */
 /*                                                                                               */
@@ -143,6 +164,12 @@ void ContentBrowserMenu::AddMeshLodNumTo8()
 			UDDToolsBPLibrary::AddStaticMeshLodNumTo8(mesh);
 		}
 	}
+}
+void ContentBrowserMenu::AddEngineStar()
+{
+}
+void ContentBrowserMenu::RemoveEngineStar()
+{
 }
 void ContentBrowserMenu::RemoveStaticMeshAllLod()
 {

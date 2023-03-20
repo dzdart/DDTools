@@ -44,6 +44,14 @@ public class DDTools : ModuleRules
                 "UMG",
                 "ContentBrowser",
 				"Projects",
+				"PakFile",
+				"Blutility",
+				"UnrealEd",
+				"UMGEditor",
+				"DeveloperSettings",
+				"BlueprintEditorLibrary",
+				"MaterialEditorTools"
+
 				// ... add private dependencies that you statically link with here ...	
 			}
 			);

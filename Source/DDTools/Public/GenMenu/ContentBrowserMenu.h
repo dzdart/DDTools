@@ -33,8 +33,13 @@ private:
 	void CreateMaterialMenu(FMenuBuilder& Builder);
 	void CreateTextureMenu(FMenuBuilder& Builder);
 	void CreateStaticMeshMenu(FMenuBuilder& Builder);
+	void CreateEditorUtilityWidgetBlueprint(FMenuBuilder& Builder);
 
 	TArray<UObject*> AssetDatasToUobjects(TArray<FAssetData> InAssetData);
+
+	/*CreateEditorUtilityWidgetBlueprint*/
+	void AddEngineStar();
+	void RemoveEngineStar();
 
 	/*StaticMeshFunctions*/
 	void RemoveStaticMeshAllLod();
