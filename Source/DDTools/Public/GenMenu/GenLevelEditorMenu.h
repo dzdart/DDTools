@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Editor.h"
+#include "IPlatformFilePak.h"
+#include "Editor/Blutility/Public/EditorUtilitySubsystem.h"
 
 /**
  * 
@@ -10,6 +13,8 @@
 class DDTOOLS_API GenLevelEditorMenu
 {
 public:
+	//UEditorUtilitySubsystem* EditorSubSys = UEditorUtilitySubsystem::UEditorUtilitySubsystem().Initialize(FSubsystemCollectionBase& Collection);
+	
 	GenLevelEditorMenu();
 	~GenLevelEditorMenu();
 	static GenLevelEditorMenu& Get();
@@ -19,6 +24,9 @@ private:
 	void LevelAddMenuBarExtension(FMenuBarBuilder& Builder);
 	void LevelMenuBarPullDown(FMenuBuilder& Builder);
 private:
+	
+	void MountAsset();
 	void SwitchLanguage();
 	void GoToProject();
+	void OpenTab();
 };

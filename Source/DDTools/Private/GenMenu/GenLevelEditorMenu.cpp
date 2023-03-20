@@ -3,8 +3,11 @@
 
 #include "GenMenu/GenLevelEditorMenu.h"
 #include "LevelEditor.h"
+#include "Editor/Blutility/Classes/EditorUtilityWidgetBlueprint.h"
+#include "Editor/UMGEditor/Public/WidgetBlueprint.h"
 #include "Engine/Classes/Kismet/KismetInternationalizationLibrary.h"
 #include "Engine/Classes/Materials/MaterialInterface.h"
+
 
 #define LOCTEXT_NAMESPACE "GenLevelEditorMenu"
 
@@ -59,6 +62,13 @@ void GenLevelEditorMenu::LevelMenuBarPullDown(FMenuBuilder& Builder)
 		)
 	);
 
+	Builder.AddMenuEntry(FText::FromString("MountAsset"),
+		FText::FromString("MountAsset"),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::MountAsset)
+		)
+	);
+
 	Builder.AddMenuEntry(FText::FromString("GoToProject"),
 		FText::FromString("GoToProject"),
 		FSlateIcon(),
@@ -66,6 +76,8 @@ void GenLevelEditorMenu::LevelMenuBarPullDown(FMenuBuilder& Builder)
 		)
 	);
 }
+
+
 
 
 /*菜单相关方法*/
@@ -87,3 +99,14 @@ void GenLevelEditorMenu::GoToProject()
 	system("explorer https://github.com/dzdart/DDTools");
 }
 
+void GenLevelEditorMenu::OpenTab()
+{
+	UEditorUtilityWidgetBlueprint* BPW = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr,*FString("EditorUtilityWidgetBlueprint'/Game/A.A'"));
+	GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>()->SpawnAndRegisterTab(BPW);
+}
+
+void GenLevelEditorMenu::MountAsset()
+{
+	UEditorUtilityWidgetBlueprint* BPW = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr, *FString("/Script/Blutility.EditorUtilityWidgetBlueprint'/DDTools/Mount/MountMain.MountMain'"));
+	GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>()->SpawnAndRegisterTab(BPW);
+}

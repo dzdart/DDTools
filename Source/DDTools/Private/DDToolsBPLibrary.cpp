@@ -5,6 +5,7 @@
 #include "HAL/IPlatformFileModule.h"
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
+#include "MainFrame/Public/Interfaces/IMainFrameModule.h"
 
 UDDToolsBPLibrary::UDDToolsBPLibrary(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
@@ -12,7 +13,7 @@ UDDToolsBPLibrary::UDDToolsBPLibrary(const FObjectInitializer& ObjectInitializer
 
 }
 
-
+#pragma optimize("", off)
 
 //设置材质变量的名字和组信息
 void UDDToolsBPLibrary::SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group)
@@ -62,7 +63,8 @@ void UDDToolsBPLibrary::SetMaterialTextureSampler(TArray<UObject*> Objects, ESam
 	{
 		UMaterial* mat = Cast<UMaterial>(item);
 		if (mat) {
-			for (UMaterialExpression* UME : mat->Expressions)
+			
+			for (UMaterialExpression* UME : mat->GetExpressions())
 			{
 				if (UMaterialExpressionTextureSample* tmpTME = Cast<UMaterialExpressionTextureSample>(UME)) { tmpTME->SamplerSource = (Type); }
 				if (UMaterialExpressionTextureSampleParameter* tmpUME = Cast<UMaterialExpressionTextureSampleParameter>(UME)) { tmpUME->SamplerSource = (Type); }
@@ -80,7 +82,8 @@ void UDDToolsBPLibrary::SetMaterialFunctionTextureSampler(UMaterialExpressionMat
 		UMaterialFunction* UMF = Cast<UMaterialFunction>(MEF->MaterialFunction->GetBaseFunction());
 		if (UMF)
 		{
-			for (UMaterialExpression* tmpUME : UMF->FunctionExpressions)
+			
+			for (UMaterialExpression* tmpUME : UMF->GetExpressions())
 			{
 				if (UMaterialExpressionTextureSample* tmpTMEA = Cast<UMaterialExpressionTextureSample>(tmpUME)) { tmpTMEA->SamplerSource = (Type); }
 				if (UMaterialExpressionTextureSampleParameter* tmpUMEB = Cast<UMaterialExpressionTextureSampleParameter>(tmpUME)) { tmpUMEB->SamplerSource = (Type); }
@@ -140,74 +143,8 @@ void UDDToolsBPLibrary::SetAssetDirct(UObject* Asset, bool& ret)
 	else { ret = false; }
 }
 
-bool UDDToolsBPLibrary::LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height)
-{
-	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-	if (!PlatformFile.FileExists(*ImagePath)) { return false; }
-
-	TArray<uint8> ImageResultData;
-	FFileHelper::LoadFileToArray(ImageResultData, *ImagePath);
-	FString Ex = FPaths::GetExtension(ImagePath, false);
-
-	//图片加载模块
-	IImageWrapperModule& ImageWrapperModule = FModuleManager::LoadModuleChecked<IImageWrapperModule>("ImageWrapper");
-	TSharedPtr<IImageWrapper> ImageWrapperPtr = ImageWrapperModule.CreateImageWrapper(EImageFormat::PNG);
-
-	if (ImageWrapperPtr.IsValid() && ImageWrapperPtr->SetCompressed(ImageResultData.GetData(), ImageResultData.GetAllocatedSize()))
-	{
-		TArray<uint8>* OutData = new TArray<uint8>();//跟格式无关的颜色数据
-
-		ImageWrapperPtr->GetRaw(ERGBFormat::RGBA, 8, *OutData);
-
-		InDyTexture = UTexture2DDynamic::Create(ImageWrapperPtr->GetWidth(), ImageWrapperPtr->GetHeight());
-
-		if (InDyTexture)
-		{
-			InDyTexture->SRGB = true;
-			InDyTexture->UpdateResource();
-
-			FTexture2DDynamicResource* Texture2DDyRes = static_cast<FTexture2DDynamicResource*>(InDyTexture->Resource);
-			FRHITexture2D* RHITexture2D = Texture2DDyRes->GetTexture2DRHI();
-			int64 w = RHITexture2D->GetSizeX();
-			int64 h = RHITexture2D->GetSizeY();
-			uint32 DestStride = 0;
-			uint8* DestData = reinterpret_cast<uint8*>(RHILockTexture2D(RHITexture2D, 0, EResourceLockMode::RLM_WriteOnly, DestStride, false));
-
-			for (int64 y = 0; y < Height; ++y)
-			{
-				int64 DestPtrStride = y * DestStride;
-				uint8* DestPtr = &DestData[DestStride];
-
-				uint8* StrData = OutData->GetData();
-				int64 SrcPtrStride = y * Width;
 
 
-				const FColor* SrcPtr = &((FColor*)(StrData))[SrcPtrStride];
-
-				for (int64 x = 0; x < Width; ++x)
-				{
-					*DestPtr++ = SrcPtr->B;
-					*DestPtr++ = SrcPtr->G;
-					*DestPtr++ = SrcPtr->R;
-					*DestPtr++ = SrcPtr->A;
-					SrcPtr++;
-
-				}
-			}
-
-			RHIUnlockTexture2D(RHITexture2D, 0, false, false);
-
-		}
-		delete OutData;
-		OutData = nullptr;
-	}
-
-
-
-	return true;
-}
-
-PRAGMA_DISABLE_OPTIMIZATION
 void UDDToolsBPLibrary::RemoveStaticMeshLod(UStaticMesh* Mesh, int LodNum)
 {
 	const int IndexLod = Mesh->GetNumLODs();
@@ -258,3 +195,149 @@ void UDDToolsBPLibrary::DDToolsTest(FString Message)
 	FMessageDialog::Debugf(FText::FromString(Message));
 }
 
+FVector UDDToolsBPLibrary::GetVertexsCenter(TArray<FVector> Vertexs)
+{
+	const int ArrayLength = Vertexs.Num();
+	float NumX = 0;
+	float NumY = 0;
+	float NumZ = 0;
+	for (FVector3d item : Vertexs)
+	{
+		NumX += item.X;
+		NumY += item.Y;
+		NumZ += item.Z;
+	}
+	FVector ret = FVector(NumX / ArrayLength, NumY / ArrayLength, NumZ / ArrayLength);
+	return ret;
+}
+
+
+
+bool UDDToolsBPLibrary::NewPackActor(UObject* InActor)
+{
+	
+	if (InActor)
+	{
+		return true;
+	}
+	return false;
+}
+
+void UDDToolsBPLibrary::SelectFolder()
+{
+	TSharedPtr<SWindow> ParentWindow;
+	if (FModuleManager::Get().IsModuleLoaded("MainFrame"))
+	{
+		IMainFrameModule& MainFrame = FModuleManager::LoadModuleChecked<IMainFrameModule>("MainFrame");
+		ParentWindow = MainFrame.GetParentWindow();
+	}
+
+}
+
+FString GetMountRelattivFormContent(FString Path) 
+{
+	if (Path.EndsWith("Contet")|| Path.EndsWith("Content\\")||Path.EndsWith("Conttent/")){return ""; }
+
+	TArray<FString> TmpStrArray;
+	Path.ParseIntoArray(TmpStrArray, TEXT("Content"));
+
+	if (TmpStrArray.Num()==1){return ""; }
+
+	FString TmpString = TmpStrArray[TmpStrArray.Num()-1];
+	TmpString=TmpString.Replace(TEXT("\\"),TEXT("/"));
+	if (TmpString.StartsWith("/"))
+	{
+		return TmpString;
+	}
+	return "/" + TmpString;
+
+}
+
+void UDDToolsBPLibrary::DDMountDir(FString Path)
+{
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+	
+	if (PlatformFile.DirectoryExists(*Path))
+	{
+		if (Path.Find("Content")>0)
+		{
+			FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
+			PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
+			FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "MountConfig.txt"));
+			TArray<FString> MountList;
+			bool ReadStat;
+			ReadTextFileToArray(ConfigPath, ReadStat, MountList);
+			/*如果该路径在历史记录中没找到，就挂载。*/
+			if (MountList.Find(Path) < 0)
+			{
+				FString RelativePath=GetMountRelattivFormContent(Path);
+				FString RootPath = "/Game" + RelativePath;
+				if (RootPath=="/Game"||RootPath=="/Game/"||RootPath=="\\Game"||RootPath=="\\Game\\")
+				{
+					FMessageDialog::Open(EAppMsgType::Ok, FText::FromString(FString(L"警告！\n该路径将会挂载到Content目录下。卸载时会导致整个Contetn被卸载！\n")+Path));
+					UE_LOG(LogTemp,Error,TEXT("路径相对为Game路径，不允许被挂载！\"%s\""),*Path);
+				}
+				FPackageName::RegisterMountPoint(RootPath, *Path);
+				MountList.Add(Path);
+				WriteTextFileFormArray(ConfigPath, MountList, ReadStat);
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp,Error,TEXT("挂载路径不存在！\"%s\"."),*Path);
+		}
+	}
+	
+
+}
+void UDDToolsBPLibrary::DDUnMountDir(FString Path)
+{
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	if (PlatformFile.DirectoryExists(*Path))
+	{
+		FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
+		PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
+		FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "MountConfig.txt"));
+		TArray<FString> MountList;
+		bool ReadStat;
+		ReadTextFileToArray(ConfigPath, ReadStat, MountList);
+		if (MountList.Find(Path) >= 0)
+		{
+			FPackageName::UnRegisterMountPoint("/Game"+GetMountRelattivFormContent(Path), *Path);
+			MountList.Remove(Path);
+			WriteTextFileFormArray(ConfigPath, MountList, ReadStat);
+		}
+
+
+	}
+}
+void UDDToolsBPLibrary::ReadTextFileToArray(FString FilePath, bool& ret, TArray<FString>& OutLine)
+{
+	FString FileContent;
+	if (!FFileHelper::LoadFileToString(FileContent, *FilePath))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to read file \"%s\"."), *FilePath);
+		ret= false;
+	}
+	FileContent.ParseIntoArrayLines(OutLine);
+	ret = true;
+}
+void UDDToolsBPLibrary::WriteTextFileFormArray(FString FilePath, TArray<FString> Line, bool& ret)
+{
+	FString FileContent = FString::Join(Line, TEXT("\n"));
+	if (!FFileHelper::SaveStringToFile(FileContent, *FilePath, FFileHelper::EEncodingOptions::ForceUTF8WithoutBOM))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Failed to write file \"%s\"."), *FilePath);
+		ret= false;
+	}
+
+	ret= true;
+}
+FString UDDToolsBPLibrary::GetDDToolsPath()
+{
+	FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
+	PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
+	return PluginDir;
+}
+#pragma optimize("", on)

@@ -8,6 +8,9 @@
 #include "Engine/Classes/Materials/MaterialExpressionScalarParameter.h"
 #include "Engine/Classes/Engine/Texture2DDynamic.h"
 #include "Runtime/Core/Public/Misc/MessageDialog.h"
+#include "Core/Public/GenericPlatform/GenericPlatformFile.h"
+#include "Runtime/CoreUObject/Public/Misc/PackageName.h"
+#include "Runtime/Core/Public/Misc/FileHelper.h"
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -34,38 +37,58 @@ public:
 
 	GENERATED_UCLASS_BODY()
 
-	/*²ÄÖÊÈ«ÇòÏà¹Ø·½·¨*/
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ÉèÖÃ²ÄÖÊ±äÁ¿Ãû³Æ", ToolTips = "ÉèÖÃ²ÄÖÊ±äÁ¿Ãû³Æ", Keywords = "SetMaterialParameterName"), Category = "BlueprintExpansionPack|Material")
+	/*æè´¨å…¨çƒç›¸å…³æ–¹æ³•*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "è®¾ç½®æè´¨å˜é‡åç§°", ToolTips = "è®¾ç½®æè´¨å˜é‡åç§°", Keywords = "SetMaterialParameterName"), Category = "BlueprintExpansionPack|Material")
 	static void SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ÉèÖÃ²ÄÖÊ¹â×·ÒõÓ°¿ª¹Ø", ToolTips = "ÉèÖÃ²ÄÖÊÇòµÄÍ¶Éä¹â×·ÒõÓ°¿ª¹Ø", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "è®¾ç½®æè´¨å…‰è¿½é˜´å½±å¼€å…³", ToolTips = "è®¾ç½®æè´¨çƒçš„æŠ•å°„å…‰è¿½é˜´å½±å¼€å…³", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
 	static UMaterial* SetMatRayShadow(UMaterial* Mat, bool on);
 
-	//ÉèÖÃ²ÄÖÊÇòËùÓĞTex½ÚµãµÄSamplerType
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ÉèÖÃ²ÄÖÊÇòÌùÍ¼É¨ÃèÆ÷SamplerType", ToolTips = "ÉèÖÃ²ÄÖÊÇòÌùÍ¼É¨ÃèÆ÷SamplerType", Keywords = "SetMaterialTextureSampler"), Category = "BlueprintExpansionPack|Material")
+	//è®¾ç½®æè´¨çƒæ‰€æœ‰TexèŠ‚ç‚¹çš„SamplerType
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "è®¾ç½®æè´¨çƒè´´å›¾æ‰«æå™¨SamplerType", ToolTips = "è®¾ç½®æè´¨çƒè´´å›¾æ‰«æå™¨SamplerType", Keywords = "SetMaterialTextureSampler"), Category = "BlueprintExpansionPack|Material")
 	static void SetMaterialTextureSampler(TArray<UObject*> Objects, ESamplerSourceMode Type);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ÉèÖÃ²ÄÖÊº¯ÊıÌùÍ¼É¨ÃèÆ÷SamplerType", ToolTips = "ÉèÖÃ²ÄÖÊº¯ÊıÌùÍ¼É¨ÃèÆ÷SamplerType", Keywords = "SetMaterialFunctionTextureSampler"), Category = "BlueprintExpansionPack|Material")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "è®¾ç½®æè´¨å‡½æ•°è´´å›¾æ‰«æå™¨SamplerType", ToolTips = "è®¾ç½®æè´¨å‡½æ•°è´´å›¾æ‰«æå™¨SamplerType", Keywords = "SetMaterialFunctionTextureSampler"), Category = "BlueprintExpansionPack|Material")
 	static void SetMaterialFunctionTextureSampler(UMaterialExpressionMaterialFunctionCall* MEF, ESamplerSourceMode Type);
 
 	/*ContentFile*/
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ÁĞ³öËùÓĞ¶ÔÏó", ToolTips = "¶ÁÈ¡ÎÄ¼ş¼ĞÏÂËùÓĞUE¶ÔÏóÎªUObject", Keywords = "ListDir"), Category = "BlueprintExpansionPack|File")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "åˆ—å‡ºæ‰€æœ‰å¯¹è±¡", ToolTips = "è¯»å–æ–‡ä»¶å¤¹ä¸‹æ‰€æœ‰UEå¯¹è±¡ä¸ºUObject", Keywords = "ListDir"), Category = "BlueprintExpansionPack|File")
 	static TArray<UObject*> ListDir(FString DirPath, bool ListChildDir);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "½«ÎÄ¼ş±ê¼ÇÎªÎ´±£´æ×´Ì¬", ToolTips = "½«ÎÄ¼ş±ê¼ÇÎªÎ´±£´æ×´Ì¬", Keywords = "MarkDirty"), Category = "BlueprintExpansionPack|File")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "å°†æ–‡ä»¶æ ‡è®°ä¸ºæœªä¿å­˜çŠ¶æ€", ToolTips = "å°†æ–‡ä»¶æ ‡è®°ä¸ºæœªä¿å­˜çŠ¶æ€", Keywords = "MarkDirty"), Category = "BlueprintExpansionPack|File")
 	static void SetAssetDirct(UObject* Asset, bool& ret);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "¶ÁÈ¡ÎÄ¼şµ½¶¯Ì¬ÌùÍ¼", ToolTips = "´Ó±¾µØÓ²ÅÌ¶ÁÈ¡pngÎÄ¼şµ½¶¯Ì¬ÌùÍ¼", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
-	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);
+	/*UFUNCTION(BlueprintCallable, meta = (DisplayName = "è¯»å–æ–‡ä»¶åˆ°åŠ¨æ€è´´å›¾", ToolTips = "ä»æœ¬åœ°ç¡¬ç›˜è¯»å–pngæ–‡ä»¶åˆ°åŠ¨æ€è´´å›¾", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
+	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);*/
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshLod", ToolTips = "ÒÆ³ı¾²Ì¬Íø¸ñÌåÖ¸¶¨LOD", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshLod", ToolTips = "ç§»é™¤é™æ€ç½‘æ ¼ä½“æŒ‡å®šLOD", Keywords = "RemoveStaticMeshLod"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void RemoveStaticMeshLod(UStaticMesh* Mesh,int LodNum);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshAllLod", ToolTips = "ÒÆ³ı¾²Ì¬Íø¸ñÌåÖ¸¶¨LOD", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshAllLod", ToolTips = "ç§»é™¤é™æ€ç½‘æ ¼ä½“æŒ‡å®šLOD", Keywords = "RemoveStaticMeshLod"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void RemoveStaticMeshAllLod(UStaticMesh* Mesh);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "AddStaticMeshLodNumTo8", ToolTips = "Ôö¼ÓÄ£ĞÍlodÊıÁ¿ÖÁ8", Keywords = "RemoveStaticMeshLod"), Category = "DDToolsTest")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "AddStaticMeshLodNumTo8", ToolTips = "å¢åŠ æ¨¡å‹lodæ•°é‡è‡³8", Keywords = "RemoveStaticMeshLod"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void AddStaticMeshLodNumTo8(UStaticMesh* Mesh);
 
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "DDToolsTest", ToolTips = "DDToolsTest", Keywords = "LoadPNGToTexture2DDynamic"), Category = "DDToolsTest")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "DDToolsTest", ToolTips = "DDToolsTest", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void DDToolsTest(FString Message);
+
+	/*OtherFunction*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetVertexsCenter", ToolTips = "è·å–Nä¸ªé¡¶ç‚¹åæ ‡çš„ä¸­å¿ƒç‚¹", Keywords = "GetVertexsCenter"), Category = "BlueprintExpansionPack|Math")
+	static FVector GetVertexsCenter(TArray<FVector> Vertexs);
+	
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "NewPackActor", ToolTips = "å°†Nä¸ªç½‘æ ¼ä½“å’ŒDecalActoræ‰“åŒ…ä¸ºä¸€ä¸ªè“å›¾", Keywords = "NewPackActor"), Category = "DDToolsTest")
+	static bool NewPackActor(UObject* InActor);
+	/*Dialog Function*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "SelectFolder", ToolTips = "SelectFolder", Keywords = "SelectFolder"), Category = "DDToolsTest")
+	static void SelectFolder();
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "MountDir", Keywords = "MountDirs,"), Category = "DDToolsTest")
+		static void DDMountDir(FString Path);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "UnMountDir", Keywords = "UnMountDirs,"), Category = "DDToolsTest")
+	static void DDUnMountDir(FString Path);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ReadTextFileToArray", Keywords = "ReadTextFileToArray,"), Category = "DDToolsTest")
+	static void ReadTextFileToArray(FString FilePath,bool& ret,TArray<FString>& OutLine);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "WriteTextFileFormArray", Keywords = "WriteTextFileFormArray,"), Category = "DDToolsTest")
+	static void WriteTextFileFormArray(FString FilePath,TArray<FString> Line,bool& ret);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetDDToolsPath", Keywords = "GetDDToolsPath,"), Category = "DDToolsTest")
+	static FString GetDDToolsPath();
 
 };
 
