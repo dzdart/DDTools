@@ -6,10 +6,15 @@
 #include "Editor.h"
 #include "IPlatformFilePak.h"
 #include "Editor/Blutility/Public/EditorUtilitySubsystem.h"
+#include "HAL/IPlatformFileModule.h"
+#include "Runtime/Core/Public/Misc/FileHelper.h"
 
 /**
  * 
  */
+
+
+
 class DDTOOLS_API GenLevelEditorMenu
 {
 public:
@@ -23,10 +28,15 @@ private:
 	void LevelCreateMenu();
 	void LevelAddMenuBarExtension(FMenuBarBuilder& Builder);
 	void LevelMenuBarPullDown(FMenuBuilder& Builder);
+
+private:
+	FString AutoRegisterMenuConfigPath;
 private:
 	
+	void AutoRegisterMenu(FMenuBuilder& Builder);
+
 	void MountAsset();
 	void SwitchLanguage();
 	void GoToProject();
-	void OpenTab();
+	void OpenTab(FString BpPaths);
 };

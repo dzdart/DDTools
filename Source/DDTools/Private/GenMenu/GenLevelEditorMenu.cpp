@@ -11,6 +11,7 @@
 
 #define LOCTEXT_NAMESPACE "GenLevelEditorMenu"
 
+
 GenLevelEditorMenu::GenLevelEditorMenu()
 {
 }
@@ -31,6 +32,7 @@ GenLevelEditorMenu& GenLevelEditorMenu::Get()
 
 void GenLevelEditorMenu::GenMenu()
 {
+
 	LevelCreateMenu();
 }
 
@@ -49,6 +51,7 @@ void GenLevelEditorMenu::LevelAddMenuBarExtension(FMenuBarBuilder& Builder)
 		LOCTEXT("PullMenu", "DDTools"),
 		LOCTEXT("PullMenu Tips", "DDTools Menu"),
 		FNewMenuDelegate::CreateRaw(this, &GenLevelEditorMenu::LevelMenuBarPullDown)
+		
 
 	);
 }
@@ -75,6 +78,7 @@ void GenLevelEditorMenu::LevelMenuBarPullDown(FMenuBuilder& Builder)
 		FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::GoToProject)
 		)
 	);
+	AutoRegisterMenu(Builder);
 }
 
 
@@ -99,10 +103,42 @@ void GenLevelEditorMenu::GoToProject()
 	system("explorer https://github.com/dzdart/DDTools");
 }
 
-void GenLevelEditorMenu::OpenTab()
+
+
+void GenLevelEditorMenu::OpenTab(FString BpPaths)
 {
-	UEditorUtilityWidgetBlueprint* BPW = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr,*FString("EditorUtilityWidgetBlueprint'/Game/A.A'"));
+	UEditorUtilityWidgetBlueprint* BPW = LoadObject<UEditorUtilityWidgetBlueprint>(nullptr,*BpPaths);
 	GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>()->SpawnAndRegisterTab(BPW);
+}
+
+void GenLevelEditorMenu::AutoRegisterMenu(FMenuBuilder& Builder)
+{
+	FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
+	PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
+	AutoRegisterMenuConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "AutoRegisterMenu.txt"));
+
+	TArray<FString> ConfigList;
+	FFileHelper::LoadFileToStringArray(ConfigList, *AutoRegisterMenuConfigPath);
+	if (ConfigList.Num()>0)
+	{
+		for (FString item:ConfigList) 
+		{
+			TArray<FString> SplitArray;
+			item.ParseIntoArray(SplitArray,TEXT("="));
+			if (SplitArray.Num()==2)
+			{
+				if (LoadObject<UObject>(nullptr, *SplitArray[1])) 
+				{
+					Builder.AddMenuEntry(FText::FromString(SplitArray[0]),
+						FText::FromString(SplitArray[0]),
+						FSlateIcon(),
+						FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::OpenTab, SplitArray[1])
+						)
+					);
+				}
+			}
+		}
+	}
 }
 
 void GenLevelEditorMenu::MountAsset()
