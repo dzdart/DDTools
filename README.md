@@ -21,7 +21,8 @@
 	* DDTools（贴图纹理相关）
 		* 开发中
 - 其他功能
-  * 1、注册自定义UMG工具面板。
+  * 1、注册自定义UMG工具/CMD按钮面板。
     * 在插件Config文件夹下，读取AutoRegisterMenu.txt文件，引擎启动的时候自动注册相关UMG面板。配置文件书写规则如下
-      显示名称=UMG路径（可以通过右键UMG，复制引用获得）
-	  ```DisplayName=/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/BB.BB'```
+      功能类型=显示名称=UMG路径（可以通过右键UMG，复制引用获得）
+	  ```UMG=DisplayName=/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/BB.BB'```
+    ```Cmd=OpenExplorer=explorer```
