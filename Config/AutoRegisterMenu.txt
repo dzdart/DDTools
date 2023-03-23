@@ -1,0 +1,3 @@
+UMG=AAA=/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/AA.AA'
+UMG=BBB=/Script/Blutility.EditorUtilityWidgetBlueprint'/Game/BB.BB'
+CMD=OpenExplorer=explorer

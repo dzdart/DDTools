@@ -89,6 +89,8 @@ public:
 	static void WriteTextFileFormArray(FString FilePath,TArray<FString> Line,bool& ret);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetDDToolsPath", Keywords = "GetDDToolsPath,"), Category = "DDToolsTest")
 	static FString GetDDToolsPath();
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "CMD", Keywords = "CMD"), Category = "DDToolsTest")
+		static void RunCmd(FString Command);
 
 };
 

@@ -340,4 +340,9 @@ FString UDDToolsBPLibrary::GetDDToolsPath()
 	PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
 	return PluginDir;
 }
+void UDDToolsBPLibrary::RunCmd(FString Command)
+{
+	FProcHandle currHandle = FPlatformProcess::CreateProc(*Command, nullptr, true, false, false, nullptr, 0, nullptr, nullptr);
+	UE_LOG(LogTemp, Warning, TEXT("URL:::%s"), *Command);
+}
 #pragma optimize("", on)

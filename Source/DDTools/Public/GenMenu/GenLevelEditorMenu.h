@@ -8,7 +8,7 @@
 #include "Editor/Blutility/Public/EditorUtilitySubsystem.h"
 #include "HAL/IPlatformFileModule.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
-
+#include "../DDToolsBPLibrary.h"
 /**
  * 
  */
@@ -39,4 +39,5 @@ private:
 	void SwitchLanguage();
 	void GoToProject();
 	void OpenTab(FString BpPaths);
+	void RunCmd(FString Commadns);
 };

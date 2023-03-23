@@ -111,6 +111,11 @@ void GenLevelEditorMenu::OpenTab(FString BpPaths)
 	GEditor->GetEditorSubsystem<UEditorUtilitySubsystem>()->SpawnAndRegisterTab(BPW);
 }
 
+void GenLevelEditorMenu::RunCmd(FString Commadns)
+{
+	UDDToolsBPLibrary::RunCmd(Commadns);
+}
+
 void GenLevelEditorMenu::AutoRegisterMenu(FMenuBuilder& Builder)
 {
 	FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
@@ -125,17 +130,30 @@ void GenLevelEditorMenu::AutoRegisterMenu(FMenuBuilder& Builder)
 		{
 			TArray<FString> SplitArray;
 			item.ParseIntoArray(SplitArray,TEXT("="));
-			if (SplitArray.Num()==2)
+			if (SplitArray.Num()==3)
 			{
-				if (LoadObject<UObject>(nullptr, *SplitArray[1])) 
+				if (SplitArray[0]=="UMG")
 				{
-					Builder.AddMenuEntry(FText::FromString(SplitArray[0]),
-						FText::FromString(SplitArray[0]),
+					if (LoadObject<UObject>(nullptr, *SplitArray[2]))
+					{
+						Builder.AddMenuEntry(FText::FromString(SplitArray[1]),
+							FText::FromString(SplitArray[1]),
+							FSlateIcon(),
+							FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::OpenTab, SplitArray[2])
+							)
+						);
+					}
+				}
+				if (SplitArray[0]=="CMD")
+				{
+					Builder.AddMenuEntry(FText::FromString(SplitArray[1]),
+						FText::FromString(SplitArray[1]),
 						FSlateIcon(),
-						FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::OpenTab, SplitArray[1])
+						FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::RunCmd, SplitArray[2])
 						)
 					);
 				}
+				
 			}
 		}
 	}
