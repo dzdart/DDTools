@@ -34,9 +34,7 @@ void FDDToolsModule::ShutdownModule()
 
 void FDDToolsModule::MountInit()
 {
-	FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
-	PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
-	FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "MountConfig.txt"));
+	FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectConfigDir(), "MountConfig.txt"));
 	TArray<FString> MountList;
 	bool ReadStat;
 	UDDToolsBPLibrary::ReadTextFileToArray(ConfigPath, ReadStat,MountList);

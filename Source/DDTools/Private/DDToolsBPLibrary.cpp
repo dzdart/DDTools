@@ -261,9 +261,7 @@ void UDDToolsBPLibrary::DDMountDir(FString Path)
 	{
 		if (Path.Find("Content")>0)
 		{
-			FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
-			PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
-			FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "MountConfig.txt"));
+			FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectConfigDir(), "MountConfig.txt"));
 			TArray<FString> MountList;
 			bool ReadStat;
 			ReadTextFileToArray(ConfigPath, ReadStat, MountList);
@@ -296,9 +294,7 @@ void UDDToolsBPLibrary::DDUnMountDir(FString Path)
 
 	if (PlatformFile.DirectoryExists(*Path))
 	{
-		FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
-		PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
-		FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(PluginDir, "Config", "MountConfig.txt"));
+		FString ConfigPath = FPaths::ConvertRelativePathToFull(FPaths::Combine(FPaths::ProjectConfigDir(), "MountConfig.txt"));
 		TArray<FString> MountList;
 		bool ReadStat;
 		ReadTextFileToArray(ConfigPath, ReadStat, MountList);
@@ -342,7 +338,15 @@ FString UDDToolsBPLibrary::GetDDToolsPath()
 }
 void UDDToolsBPLibrary::RunCmd(FString Command)
 {
-	FProcHandle currHandle = FPlatformProcess::CreateProc(*Command, nullptr, true, false, false, nullptr, 0, nullptr, nullptr);
+	TArray<FString> CommandList;
+	Command.ParseIntoArray(CommandList,TEXT(" "));
+
+	FString CommandHead = CommandList[0];
+	FString Parms = Command.Replace(*FString(CommandHead + " "), TEXT(""));
+
+
+
+	FProcHandle currHandle = FPlatformProcess::CreateProc(*CommandHead, *Parms, true, false, false, nullptr, 0, nullptr, nullptr);
 	UE_LOG(LogTemp, Warning, TEXT("URL:::%s"), *Command);
 }
 #pragma optimize("", on)
