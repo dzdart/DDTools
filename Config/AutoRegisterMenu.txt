@@ -1,0 +1,1 @@
+CMD=打开百度=explorer http:\\www.baidu.com

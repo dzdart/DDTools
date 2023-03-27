@@ -42,7 +42,8 @@ void FDDToolsModule::MountInit()
 	{
 		for (FString item:MountList)
 		{
-			FPackageName::RegisterMountPoint("/Game/", *item);
+			FString RootPath = "/Game" + UDDToolsBPLibrary::GetMountRelattivFormContent(item);
+			FPackageName::RegisterMountPoint(RootPath, *item);
 		}
 	}
 }

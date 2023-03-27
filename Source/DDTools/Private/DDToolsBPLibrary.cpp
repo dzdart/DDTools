@@ -234,24 +234,25 @@ void UDDToolsBPLibrary::SelectFolder()
 
 }
 
-FString GetMountRelattivFormContent(FString Path) 
+FString UDDToolsBPLibrary::GetMountRelattivFormContent(FString Path)
 {
-	if (Path.EndsWith("Contet")|| Path.EndsWith("Content\\")||Path.EndsWith("Conttent/")){return ""; }
+	if (Path.EndsWith("Contet") || Path.EndsWith("Content\\") || Path.EndsWith("Conttent/")) { return ""; }
 
 	TArray<FString> TmpStrArray;
 	Path.ParseIntoArray(TmpStrArray, TEXT("Content"));
 
-	if (TmpStrArray.Num()==1){return ""; }
+	if (TmpStrArray.Num() == 1) { return ""; }
 
-	FString TmpString = TmpStrArray[TmpStrArray.Num()-1];
-	TmpString=TmpString.Replace(TEXT("\\"),TEXT("/"));
+	FString TmpString = TmpStrArray[TmpStrArray.Num() - 1];
+	TmpString = TmpString.Replace(TEXT("\\"), TEXT("/"));
 	if (TmpString.StartsWith("/"))
 	{
 		return TmpString;
 	}
 	return "/" + TmpString;
-
 }
+
+
 
 void UDDToolsBPLibrary::DDMountDir(FString Path)
 {

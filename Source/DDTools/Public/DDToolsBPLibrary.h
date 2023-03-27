@@ -79,8 +79,9 @@ public:
 	/*Dialog Function*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "SelectFolder", ToolTips = "SelectFolder", Keywords = "SelectFolder"), Category = "DDToolsTest")
 	static void SelectFolder();
+	static FString GetMountRelattivFormContent(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "MountDir", Keywords = "MountDirs,"), Category = "DDToolsTest")
-		static void DDMountDir(FString Path);
+	static void DDMountDir(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "UnMountDir", Keywords = "UnMountDirs,"), Category = "DDToolsTest")
 	static void DDUnMountDir(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ReadTextFileToArray", Keywords = "ReadTextFileToArray,"), Category = "DDToolsTest")
