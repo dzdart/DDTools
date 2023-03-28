@@ -37,6 +37,7 @@ public:
 
 	GENERATED_UCLASS_BODY()
 
+
 	/*材质全球相关方法*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质变量名称", ToolTips = "设置材质变量名称", Keywords = "SetMaterialParameterName"), Category = "BlueprintExpansionPack|Material")
 	static void SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group);
@@ -73,22 +74,29 @@ public:
 	/*OtherFunction*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetVertexsCenter", ToolTips = "获取N个顶点坐标的中心点", Keywords = "GetVertexsCenter"), Category = "BlueprintExpansionPack|Math")
 	static FVector GetVertexsCenter(TArray<FVector> Vertexs);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "IsPowerOfTwo", ToolTips = "判断整型是否2的幂次方", Keywords = "IsPowerOfTwo"), Category = "BlueprintExpansionPack|Math")
+		static bool IsPowerOfTwo(int n);
 	
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "NewPackActor", ToolTips = "将N个网格体和DecalActor打包为一个蓝图", Keywords = "NewPackActor"), Category = "DDToolsTest")
-	static bool NewPackActor(UObject* InActor);
+
 	/*Dialog Function*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "SelectFolder", ToolTips = "SelectFolder", Keywords = "SelectFolder"), Category = "DDToolsTest")
 	static void SelectFolder();
+
+	/*MountFunction*/
 	static FString GetMountRelattivFormContent(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "MountDir", Keywords = "MountDirs,"), Category = "DDToolsTest")
 	static void DDMountDir(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "UnMountDir", Keywords = "UnMountDirs,"), Category = "DDToolsTest")
 	static void DDUnMountDir(FString Path);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ReadTextFileToArray", Keywords = "ReadTextFileToArray,"), Category = "DDToolsTest")
+
+		/*Txt Write and read*/
 	static void ReadTextFileToArray(FString FilePath,bool& ret,TArray<FString>& OutLine);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "WriteTextFileFormArray", Keywords = "WriteTextFileFormArray,"), Category = "DDToolsTest")
 	static void WriteTextFileFormArray(FString FilePath,TArray<FString> Line,bool& ret);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetDDToolsPath", Keywords = "GetDDToolsPath,"), Category = "DDToolsTest")
+
+
 	static FString GetDDToolsPath();
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "CMD", Keywords = "CMD"), Category = "DDToolsTest")
 		static void RunCmd(FString Command);

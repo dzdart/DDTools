@@ -9,6 +9,7 @@
 #include "HAL/IPlatformFileModule.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
 #include "../DDToolsBPLibrary.h"
+#include "ProjectToVT.h"
 /**
  * 
  */
@@ -34,7 +35,7 @@ private:
 private:
 	
 	void AutoRegisterMenu(FMenuBuilder& Builder);
-
+	void ProjectVt();
 	void MountAsset();
 	void SwitchLanguage();
 	void GoToProject();

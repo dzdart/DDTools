@@ -211,17 +211,16 @@ FVector UDDToolsBPLibrary::GetVertexsCenter(TArray<FVector> Vertexs)
 	return ret;
 }
 
-
-
-bool UDDToolsBPLibrary::NewPackActor(UObject* InActor)
+bool UDDToolsBPLibrary::IsPowerOfTwo(int n)
 {
-	
-	if (InActor)
+	if (n!=0)
 	{
-		return true;
+		return (FMath::Abs(n)& (FMath::Abs(n) - 1)) == 0;
 	}
 	return false;
 }
+
+
 
 void UDDToolsBPLibrary::SelectFolder()
 {
@@ -335,7 +334,7 @@ FString UDDToolsBPLibrary::GetDDToolsPath()
 {
 	FString PluginDir = FPaths::GetPath(FModuleManager::Get().GetModuleFilename("DDTools"));
 	PluginDir = PluginDir.Replace(TEXT("Binaries/Win64"), TEXT(""));
-	return PluginDir;
+	return FPaths::ConvertRelativePathToFull(PluginDir);
 }
 void UDDToolsBPLibrary::RunCmd(FString Command)
 {

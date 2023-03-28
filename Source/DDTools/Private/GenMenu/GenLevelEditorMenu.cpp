@@ -65,6 +65,13 @@ void GenLevelEditorMenu::LevelMenuBarPullDown(FMenuBuilder& Builder)
 		)
 	);
 
+	Builder.AddMenuEntry(FText::FromString("ProjectToVt"),
+		FText::FromString("ProjectToVt"),
+		FSlateIcon(),
+		FUIAction(FExecuteAction::CreateRaw(this, &GenLevelEditorMenu::ProjectVt)
+		)
+	);
+
 	Builder.AddMenuEntry(FText::FromString("MountAsset"),
 		FText::FromString("MountAsset"),
 		FSlateIcon(),
@@ -157,6 +164,11 @@ void GenLevelEditorMenu::AutoRegisterMenu(FMenuBuilder& Builder)
 			}
 		}
 	}
+}
+
+void GenLevelEditorMenu::ProjectVt()
+{
+	ProjectToVT::Get().GenMenu();
 }
 
 void GenLevelEditorMenu::MountAsset()
