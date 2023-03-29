@@ -11,6 +11,8 @@
 #include "Core/Public/GenericPlatform/GenericPlatformFile.h"
 #include "Runtime/CoreUObject/Public/Misc/PackageName.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
+#include "AssetRegistryModule.h"
+#include "Engine/Classes/Engine/ObjectLibrary.h"
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -55,6 +57,8 @@ public:
 	static TArray<UObject*> ListDir(FString DirPath, bool ListChildDir);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "将文件标记为未保存状态", ToolTips = "将文件标记为未保存状态", Keywords = "MarkDirty"), Category = "BlueprintExpansionPack|File")
 	static void SetAssetDirct(UObject* Asset, bool& ret);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "获取文件夹下指定类的所有AssetData", ToolTips = "获取文件夹下指定类的所有AssetData", Keywords = "GetAllAssetDataOfClass"), Category = "BlueprintExpansionPack|File")
+	static TArray<FAssetData> GetAllAssetDataOfClass(UClass* Class,FString Path);
 
 	/*UFUNCTION(BlueprintCallable, meta = (DisplayName = "读取文件到动态贴图", ToolTips = "从本地硬盘读取png文件到动态贴图", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
 	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);*/

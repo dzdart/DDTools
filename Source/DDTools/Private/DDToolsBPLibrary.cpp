@@ -143,6 +143,19 @@ void UDDToolsBPLibrary::SetAssetDirct(UObject* Asset, bool& ret)
 	else { ret = false; }
 }
 
+TArray<FAssetData> UDDToolsBPLibrary::GetAllAssetDataOfClass(UClass* Class, FString Path)
+{
+	UObjectLibrary* objectLibrary = UObjectLibrary::CreateLibrary(Class,false,GIsEditor);
+	if (objectLibrary) 
+	{
+		objectLibrary->AddToRoot();
+	}
+	objectLibrary->LoadAssetDataFromPath(Path);
+	TArray<FAssetData> ret;
+	objectLibrary->GetAssetDataList(ret);
+	return ret;
+}
+
 
 
 void UDDToolsBPLibrary::RemoveStaticMeshLod(UStaticMesh* Mesh, int LodNum)
