@@ -6,6 +6,10 @@
 #include "Widgets/Docking/SDockTab.h"
 #include "Widgets/Layout/SBox.h"
 #include "Widgets/Text/STextBlock.h"
+#include "Runtime/UMG/Public/Components/VerticalBox.h"
+#include "Runtime/Slate/Public/Widgets/Notifications/SProgressBar.h"
+#include "Widgets/Layout/SWrapBox.h"
+#include "DDToolsBPLibrary.h"
 
 /**
  * 
@@ -19,4 +23,18 @@ public:
 	void GenMenu();
 	TSharedRef<SDockTab> SpawnTab(const FSpawnTabArgs& SpawnTabArgs);
 	FString FontPath;
+private:
+	float WrapBoxWidget = 200.0f;
+	TSharedPtr<SEditableTextBox> EditableTextBox;
+	TSharedPtr<SProgressBar> ProgressBar;
+	TSharedPtr<STextBlock> TextBlock;
+
+	
+
+private:
+	/*ButtonFunction*/
+	void SetAllTexUseVt();
+	void SetAllMatAndFunctionUsetVt();
+	void FixAllMatRefrenceToGame();
+	void GoAll();
 };

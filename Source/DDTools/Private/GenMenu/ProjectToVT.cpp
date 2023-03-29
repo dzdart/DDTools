@@ -2,10 +2,7 @@
 
 
 #include "GenMenu/ProjectToVT.h"
-#include "Runtime/UMG/Public/Components/VerticalBox.h"
-#include "Runtime/Slate/Public/Widgets/Notifications/SProgressBar.h"
-#include "Widgets/Layout/SWrapBox.h"
-#include "DDToolsBPLibrary.h"
+
 
 
 #define LOCTEXT_NAMESPACE "ProjectToVtName"
@@ -76,6 +73,18 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 					+SVerticalBox::Slot()
 					.AutoHeight()
 					.Padding(10.0f)
+					.HAlign(HAlign_Fill)
+					.VAlign(VAlign_Fill)
+					
+						[
+							SAssignNew(EditableTextBox,SEditableTextBox)
+							.Font(FSlateFontInfo(FontPath, 18))
+							.Text(FText::FromString(TEXT("/Game")))
+						]
+
+					+SVerticalBox::Slot()
+					.AutoHeight()
+					.Padding(WrapBoxWidget,10.0f, WrapBoxWidget,10.0f)
 					[
 						SNew(SWrapBox)
 						.UseAllottedWidth(true)
@@ -85,15 +94,18 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 						.HAlign(HAlign_Center)
 						.VAlign(VAlign_Center)
 						.ForceNewLine(false)
+
 							[
 								SNew(SButton)
-								.Text(FText::FromString(TEXT("Button 1")))
+								.ToolTipText(FText::FromString(TEXT("获取Game目录下的所有Tex资产设置为Vt\n对于尺寸为非2的幂次方的，将会设置填充到2的幂次方\n对于HDR相关的贴图，跳过不设置")))
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
+	
 								[
 									SNew(STextBlock)
-									.Text(FText::FromString(TEXT("按钮1")))
+									.Margin(FMargin(5.0f))
+									.Text(FText::FromString(TEXT("设置所有纹理为Vt")))
 									.Font(FSlateFontInfo(FontPath, 24))
 								]
 							]
@@ -104,13 +116,13 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 							.ForceNewLine(false)
 							[
 								SNew(SButton)
-								.Text(FText::FromString(TEXT("Button 1")))
+								.ToolTipText(FText::FromString(TEXT("获取Game目录下的所有Tex资产")))
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
 								[
 									SNew(STextBlock)
-									.Text(FText::FromString(TEXT("按钮1")))
+									.Text(FText::FromString(TEXT("设置所有材质为Vt")))
 									.Font(FSlateFontInfo(FontPath, 24))
 								]
 							]
@@ -121,13 +133,14 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 							.ForceNewLine(false)
 							[
 								SNew(SButton)
-								.Text(FText::FromString(TEXT("Button 1")))
+								.ToolTipText(FText::FromString(TEXT("获取Game目录下的所有的材质球和材质函数。\n将其引用的所有Tex和MatFunction都复制到/Game/ConvertAsset")))
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
+								//.OnClicked(this,&)
 								[
 									SNew(STextBlock)
-									.Text(FText::FromString(TEXT("按钮1")))
+									.Text(FText::FromString(TEXT("修复所有材质引用到本地")))
 									.Font(FSlateFontInfo(FontPath, 24))
 								]
 							]
@@ -138,7 +151,6 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 							.ForceNewLine(false)
 							[
 								SNew(SButton)
-								.Text(FText::FromString(TEXT("Button 1")))
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
@@ -158,7 +170,15 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 			.AutoHeight()
 			.Padding(10.f)
 			[
-				SNew(SProgressBar)
+				SAssignNew(TextBlock,STextBlock)
+				.Text(FText::FromString(TEXT("Test")))
+				.Font(FSlateFontInfo(FontPath, 12))
+			]
+			+SVerticalBox::Slot()
+			.AutoHeight()
+			.Padding(10.f)
+			[
+				SAssignNew(ProgressBar, SProgressBar)
 			]
 
 			+SVerticalBox::Slot()
@@ -176,7 +196,7 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 					.VAlign(VAlign_Center)
 					[
 						SNew(STextBlock)
-						.Text(FText::FromString(TEXT("按钮1")))
+						.Text(FText::FromString(TEXT("整体修改")))
 						.Font(FSlateFontInfo(FontPath, 24))
 					]
 				]
@@ -184,4 +204,21 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 
             //EntTheCode
 		];
+}
+
+void ProjectToVT::SetAllTexUseVt()
+{
+
+}
+
+void ProjectToVT::SetAllMatAndFunctionUsetVt()
+{
+}
+
+void ProjectToVT::FixAllMatRefrenceToGame()
+{
+}
+
+void ProjectToVT::GoAll()
+{
 }
