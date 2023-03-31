@@ -12,7 +12,8 @@
 #include "Runtime/CoreUObject/Public/Misc/PackageName.h"
 #include "Runtime/Core/Public/Misc/FileHelper.h"
 #include "AssetRegistryModule.h"
-#include "Engine/Classes/Engine/ObjectLibrary.h"
+#include "Engine/Classes/Engine/ObjectLibrary.h "
+#include "FileHelpers.h"
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -45,6 +46,8 @@ public:
 	static void SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质光追阴影开关", ToolTips = "设置材质球的投射光追阴影开关", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
 	static UMaterial* SetMatRayShadow(UMaterial* Mat, bool on);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "保存资产", ToolTips = "传入需要保存的资产的AssetData或者Object对象", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
+	static void SaveAssets(TArray<FAssetData> AssetData,TArray<UObject*> Objects);
 
 	//设置材质球所有Tex节点的SamplerType
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质球贴图扫描器SamplerType", ToolTips = "设置材质球贴图扫描器SamplerType", Keywords = "SetMaterialTextureSampler"), Category = "BlueprintExpansionPack|Material")

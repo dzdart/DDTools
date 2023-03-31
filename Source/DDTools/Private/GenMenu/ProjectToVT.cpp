@@ -9,7 +9,7 @@
 const FName ProjectName = TEXT("ProjectToVt");
 ProjectToVT::ProjectToVT()
 {
-
+	
 }
 
 ProjectToVT::~ProjectToVT()
@@ -101,7 +101,8 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
-	
+								.OnClicked_Raw(this, &ProjectToVT::SetAllTexUseVt)
+								
 								[
 									SNew(STextBlock)
 									.Margin(FMargin(5.0f))
@@ -120,6 +121,7 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
+								
 								[
 									SNew(STextBlock)
 									.Text(FText::FromString(TEXT("设置所有材质为Vt")))
@@ -137,7 +139,6 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
-								//.OnClicked(this,&)
 								[
 									SNew(STextBlock)
 									.Text(FText::FromString(TEXT("修复所有材质引用到本地")))
@@ -206,9 +207,11 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 		];
 }
 
-void ProjectToVT::SetAllTexUseVt()
+FReply ProjectToVT::SetAllTexUseVt()
 {
+	UE_LOG(LogTemp,Warning,TEXT("%s"),*EditableTextBox->GetText().ToString());
 
+	return FReply::Handled();
 }
 
 void ProjectToVT::SetAllMatAndFunctionUsetVt()

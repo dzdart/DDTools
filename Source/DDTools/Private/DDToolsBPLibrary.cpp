@@ -57,6 +57,21 @@ UMaterial* UDDToolsBPLibrary::SetMatRayShadow(UMaterial* Mat, bool on)
 
 }
 
+void UDDToolsBPLibrary::SaveAssets(TArray<FAssetData> AssetData, TArray<UObject*> Objects)
+{
+	TArray<UPackage*> ToSavePackage;
+	TArray<FAssetData> ObjectAssetData;
+	for (UObject* item:Objects)
+	{
+		ToSavePackage.Add(item->GetPackage());
+	}
+	for (FAssetData item:AssetData)
+	{
+		ToSavePackage.Add(item.GetPackage());
+	}
+	UEditorLoadingAndSavingUtils::SavePackages(ToSavePackage,false);
+}
+
 void UDDToolsBPLibrary::SetMaterialTextureSampler(TArray<UObject*> Objects, ESamplerSourceMode Type)
 {
 	for (auto item : Objects)

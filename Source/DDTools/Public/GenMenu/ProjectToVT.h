@@ -33,7 +33,7 @@ private:
 
 private:
 	/*ButtonFunction*/
-	void SetAllTexUseVt();
+	FReply SetAllTexUseVt();
 	void SetAllMatAndFunctionUsetVt();
 	void FixAllMatRefrenceToGame();
 	void GoAll();
