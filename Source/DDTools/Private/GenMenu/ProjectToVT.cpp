@@ -117,7 +117,7 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 							.ForceNewLine(false)
 							[
 								SNew(SButton)
-								.ToolTipText(FText::FromString(TEXT("获取Game目录下的所有Tex资产")))
+								.ToolTipText(FText::FromString(TEXT("获取Game目录下的所有材质和材质函数资产，将其中的Tex节点修改为虚拟纹理所支持的类型")))
 								.ContentPadding(FMargin(0.0f))
 								.HAlign(HAlign_Center)
 								.VAlign(VAlign_Center)
@@ -209,13 +209,31 @@ TSharedRef<SDockTab> ProjectToVT::SpawnTab(const FSpawnTabArgs& SpawnTabArgs)
 
 FReply ProjectToVT::SetAllTexUseVt()
 {
-	UE_LOG(LogTemp,Warning,TEXT("%s"),*EditableTextBox->GetText().ToString());
+	TArray<FAssetData> GetAssetData;
+	GetAssetData=UDDToolsBPLibrary::GetAllAssetDataOfClass(UTexture::StaticClass(),EditableTextBox->GetText().ToString());
+	ProgressBar->SetPercent(0);
+	float index = 0;
+	float length = GetAssetData.Num();
+	for (FAssetData item:GetAssetData)
+	{
+		ProgressBar->SetPercent(index/length);
+		UDDToolsBPLibrary::SetTextureUseVt(Cast<UTexture>(item.GetAsset()), true, true);
+		index += 1.0f;
+	}
+
+	
 
 	return FReply::Handled();
 }
 
-void ProjectToVT::SetAllMatAndFunctionUsetVt()
+FReply ProjectToVT::SetAllMatAndFunctionUsetVt()
 {
+	TArray<FAssetData> MaterialAssetDatas;
+	TArray<FAssetData> MaterialFunctionAssetDatas;
+
+	MaterialAssetDatas = UDDToolsBPLibrary::GetAllAssetDataOfClass(UMaterial::StaticClass(), EditableTextBox->GetText().ToString());
+	MaterialFunctionAssetDatas= UDDToolsBPLibrary::GetAllAssetDataOfClass(UMaterialFunction::StaticClass(), EditableTextBox->GetText().ToString());
+	return FReply::Handled();
 }
 
 void ProjectToVT::FixAllMatRefrenceToGame()

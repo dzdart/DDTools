@@ -6,7 +6,7 @@
 #include "IImageWrapper.h"
 #include "IImageWrapperModule.h"
 #include "MainFrame/Public/Interfaces/IMainFrameModule.h"
-
+typedef float(*_getCircleArea)(float radius);
 UDDToolsBPLibrary::UDDToolsBPLibrary(const FObjectInitializer& ObjectInitializer)
 : Super(ObjectInitializer)
 {
@@ -70,6 +70,92 @@ void UDDToolsBPLibrary::SaveAssets(TArray<FAssetData> AssetData, TArray<UObject*
 		ToSavePackage.Add(item.GetPackage());
 	}
 	UEditorLoadingAndSavingUtils::SavePackages(ToSavePackage,false);
+}
+
+void UDDToolsBPLibrary::SetMaterialToVT(UMaterial* Mat)
+{
+	if (Mat)
+	{
+		TConstArrayView<TObjectPtr<UMaterialExpression>> Expressions=Mat->GetExpressions();
+		for (auto item : Expressions)
+		{
+			if (UMaterialExpressionTextureBase* MatExpressionTextureBase=Cast<UMaterialExpressionTextureBase>(item))
+			{
+				MatExpressionTextureBase->SamplerType;
+			}
+		}
+	}
+}
+
+
+
+void UDDToolsBPLibrary::SetTextureUseVt(UTexture* Tex, bool UseVt, bool MarkDirt)
+{
+	if (Tex)
+	{
+		FString EnumValueString = FindObject<UEnum>(ANY_PACKAGE, TEXT("TextureCompressionSettings"), true)->GetNameStringByValue(Tex->CompressionSettings);
+		if (EnumValueString.Find("HDR")<0|| FMath::IsPowerOfTwo(Tex->Source.GetSizeX()) || FMath::IsPowerOfTwo(Tex->Source.GetSizeY()))
+		{
+			Tex->VirtualTextureStreaming = UseVt;
+			if (MarkDirt)
+			{
+				Tex->PostEditChange();
+				Tex->MarkPackageDirty();
+			}
+		}
+	}
+}
+
+void UDDToolsBPLibrary::ResetTextureSize(UTexture2D* Tex, int NewX, int NewY)
+{
+	if (Tex && NewX > 0 && NewY > 0)
+	{
+		UTextureRenderTarget2D* NewRenderTarget2D = NewObject<UTextureRenderTarget2D>();
+		if (!NewRenderTarget2D){return;}
+		NewRenderTarget2D->RenderTargetFormat = ETextureRenderTargetFormat::RTF_RGBA16f;
+		NewRenderTarget2D->ClearColor = FLinearColor::Black;
+		NewRenderTarget2D->bAutoGenerateMips = true;
+		NewRenderTarget2D->InitAutoFormat(NewX, NewY);
+		NewRenderTarget2D->UpdateResourceImmediate(true);
+
+		UMaterial* Parent = LoadObject<UMaterial>(nullptr,TEXT("/Script/Engine.Material'/DDTools/UtilitMaterial/RenderTargetMat.RenderTargetMat'"));
+		if (!Parent) { return; };
+		UMaterialInstanceDynamic* NewMId = UMaterialInstanceDynamic::Create(Parent, nullptr);
+		if (!NewMId) { return; }
+		NewMId->SetTextureParameterValue(FName("Tex"),Tex);
+		UKismetRenderingLibrary::DrawMaterialToRenderTarget(nullptr, NewRenderTarget2D, NewMId);
+		UKismetRenderingLibrary::ConvertRenderTargetToTexture2DEditorOnly(nullptr,NewRenderTarget2D, Tex);
+		UKismetRenderingLibrary::ReleaseRenderTarget2D(NewRenderTarget2D);
+		Parent = nullptr;
+		NewMId = nullptr;
+	}
+}
+
+EMaterialSamplerType UDDToolsBPLibrary::FlipVirtualSampleOrNormal(EMaterialSamplerType InType)
+{
+	TMap<EMaterialSamplerType, EMaterialSamplerType> data = {
+		{SAMPLERTYPE_Color,SAMPLERTYPE_VirtualColor},
+		{SAMPLERTYPE_Grayscale,SAMPLERTYPE_VirtualGrayscale},
+		{SAMPLERTYPE_Alpha,SAMPLERTYPE_VirtualAlpha},
+		{SAMPLERTYPE_Normal,SAMPLERTYPE_VirtualNormal},
+		{SAMPLERTYPE_Masks,SAMPLERTYPE_VirtualMasks},
+		{SAMPLERTYPE_LinearColor,SAMPLERTYPE_VirtualLinearColor},
+		{SAMPLERTYPE_LinearGrayscale,SAMPLERTYPE_VirtualLinearGrayscale},
+
+		{SAMPLERTYPE_VirtualColor,SAMPLERTYPE_Color},
+		{SAMPLERTYPE_VirtualGrayscale,SAMPLERTYPE_Grayscale},
+		{SAMPLERTYPE_VirtualAlpha,SAMPLERTYPE_Alpha},
+		{SAMPLERTYPE_VirtualNormal,SAMPLERTYPE_Normal},
+		{SAMPLERTYPE_VirtualMasks,SAMPLERTYPE_Masks},
+		{SAMPLERTYPE_VirtualLinearColor,SAMPLERTYPE_LinearColor},
+		{SAMPLERTYPE_VirtualLinearGrayscale,SAMPLERTYPE_LinearGrayscale},
+
+	};
+	if (data.Contains(InType))
+	{
+		return *data.Find(InType);
+	}
+	return InType;
 }
 
 void UDDToolsBPLibrary::SetMaterialTextureSampler(TArray<UObject*> Objects, ESamplerSourceMode Type)
@@ -241,11 +327,23 @@ FVector UDDToolsBPLibrary::GetVertexsCenter(TArray<FVector> Vertexs)
 
 bool UDDToolsBPLibrary::IsPowerOfTwo(int n)
 {
-	if (n!=0)
+
+	return FMath::IsPowerOfTwo(n);
+}
+
+UObject* UDDToolsBPLibrary::CreateAssetFormClass(FString Dir, FString AssetName, TSubclassOf<UObject> ObjectClass)
+{
+	if (Dir.StartsWith("/Game"))
 	{
-		return (FMath::Abs(n)& (FMath::Abs(n) - 1)) == 0;
+		UPackage* package = CreatePackage(*AssetName);
+		
+		UObject* object = NewObject<UObject>(package,ObjectClass,*AssetName,EObjectFlags::RF_Public|EObjectFlags::RF_Standalone|EObjectFlags::RF_HasExternalPackage|EObjectFlags::RF_ArchetypeObject);
+		object->SetExternalPackage(package);
+		object->MarkPackageDirty();
+		FAssetRegistryModule::AssetCreated(object);
+		return object;
 	}
-	return false;
+	return nullptr;
 }
 
 

@@ -1,10 +1,27 @@
 // Some copyright should be here...
 
 using UnrealBuildTool;
+using System.IO;
 
 public class DDTools : ModuleRules
 {
-	public DDTools(ReadOnlyTargetRules Target) : base(Target)
+    private string ModulePath 
+	{ 
+		get 
+		{ 
+			return ModuleDirectory; 
+		} 
+	}
+
+    private string ThirdPartyPath 
+	{ 
+		get 
+		{ 
+			return Path.GetFullPath(Path.Combine(ModulePath, "../../ThirdParty")); 
+		} 
+	}
+
+    public DDTools(ReadOnlyTargetRules Target) : base(Target)
 	{
 		PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
 		
@@ -50,7 +67,8 @@ public class DDTools : ModuleRules
 				"UMGEditor",
 				"DeveloperSettings",
 				"BlueprintEditorLibrary",
-				"MaterialEditorTools"
+				"MaterialEditorTools",
+				"AssetRegistry"
 
 				// ... add private dependencies that you statically link with here ...	
 			}

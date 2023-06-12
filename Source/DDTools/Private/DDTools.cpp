@@ -3,9 +3,16 @@
 #include "DDTools.h"
 #include "GenMenu/GenLevelEditorMenu.h"
 #include "GenMenu/ContentBrowserMenu.h"
+#include "Developer/AssetTools/Public/AssetToolsModule.h"
+
 
 
 #define LOCTEXT_NAMESPACE "FDDToolsModule"
+
+
+
+
+
 
 FDDToolsModule& FDDToolsModule::Get()
 {
@@ -24,6 +31,10 @@ void FDDToolsModule::StartupModule()
 	ContentBrowserMenu::Get().GenMenu();
 
 	FCoreDelegates::OnFEngineLoopInitComplete.AddRaw(this,&FDDToolsModule::MountInit);
+
+	FCoreUObjectDelegates::FOnObjectPreSave();
+	//注册资产保护事件
+
 
 }
 

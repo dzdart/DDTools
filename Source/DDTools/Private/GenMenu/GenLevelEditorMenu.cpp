@@ -97,9 +97,9 @@ void GenLevelEditorMenu::SwitchLanguage()
 	FString NowLanguage = UKismetInternationalizationLibrary::GetCurrentLanguage();
 	if (NowLanguage == L"en")
 	{
-		UKismetInternationalizationLibrary::SetCurrentLanguage("zh_cn", false);
+		UKismetInternationalizationLibrary::SetCurrentLanguage("zh-Hans", false);
 	}
-	if (NowLanguage == L"zh-Cn")
+	if (NowLanguage == L"zh-Hans")
 	{
 		UKismetInternationalizationLibrary::SetCurrentLanguage("en", false);
 	}

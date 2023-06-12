@@ -7,6 +7,9 @@
 #include "Engine/Classes/Materials/MaterialExpression.h"
 #include "Engine/Classes/Materials/MaterialExpressionScalarParameter.h"
 #include "Engine/Classes/Engine/Texture2DDynamic.h"
+#include "Engine/Classes/Engine/TextureRenderTarget2D.h"
+#include "Engine/Classes/Materials/MaterialInstanceDynamic.h"
+#include "Engine/Classes/Kismet/KismetRenderingLibrary.h"
 #include "Runtime/Core/Public/Misc/MessageDialog.h"
 #include "Core/Public/GenericPlatform/GenericPlatformFile.h"
 #include "Runtime/CoreUObject/Public/Misc/PackageName.h"
@@ -14,6 +17,7 @@
 #include "AssetRegistryModule.h"
 #include "Engine/Classes/Engine/ObjectLibrary.h "
 #include "FileHelpers.h"
+
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -46,10 +50,22 @@ public:
 	static void SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质光追阴影开关", ToolTips = "设置材质球的投射光追阴影开关", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
 	static UMaterial* SetMatRayShadow(UMaterial* Mat, bool on);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "保存资产", ToolTips = "传入需要保存的资产的AssetData或者Object对象", Keywords = "SetMatRayShadow"), Category = "BlueprintExpansionPack|Material")
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "保存资产", ToolTips = "传入需要保存的资产的AssetData或者Object对象", Keywords = "SaveAssets"), Category = "BlueprintExpansionPack|Material")
 	static void SaveAssets(TArray<FAssetData> AssetData,TArray<UObject*> Objects);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质为虚拟纹理", ToolTips = "将传入的材质对象所有的Tex节点全部修改为虚拟纹理相关，二级Function暂时不支持！仅支持修改/Game目录下资产", Keywords = "SetMaterialToVT"), Category = "BlueprintExpansionPack|Material")
+	static void SetMaterialToVT(UMaterial* Mat);
+
+	/*设置Texture相关函数*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置Texture启用VT", ToolTips = "将传入的Texture对象转为VT\n如果Tex是HDR类型将不会转为VT\n如果尺寸不是2的幂次方，将会自动扩展为2的幂次方", Keywords = "SetTextureUseVt"), Category = "BlueprintExpansionPack|Texture")
+	static void SetTextureUseVt(UTexture* Tex, bool UseVt = true, bool MarkDirt = true);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "重设贴图大小", ToolTips = "重新设置贴图尺寸", Keywords = "ResetTextureSize"), Category = "BlueprintExpansionPack|Texture")
+		static void ResetTextureSize(UTexture2D* Tex,int NewX,int NewY);
+
+
 
 	//设置材质球所有Tex节点的SamplerType
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "切换MaterialSamplerType", ToolTips = "设置材质球贴图扫描器SamplerType", Keywords = "SetMaterialTextureSampler"), Category = "BlueprintExpansionPack|Material")
+	static EMaterialSamplerType FlipVirtualSampleOrNormal(EMaterialSamplerType InType);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质球贴图扫描器SamplerType", ToolTips = "设置材质球贴图扫描器SamplerType", Keywords = "SetMaterialTextureSampler"), Category = "BlueprintExpansionPack|Material")
 	static void SetMaterialTextureSampler(TArray<UObject*> Objects, ESamplerSourceMode Type);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "设置材质函数贴图扫描器SamplerType", ToolTips = "设置材质函数贴图扫描器SamplerType", Keywords = "SetMaterialFunctionTextureSampler"), Category = "BlueprintExpansionPack|Material")
@@ -81,9 +97,10 @@ public:
 	/*OtherFunction*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetVertexsCenter", ToolTips = "获取N个顶点坐标的中心点", Keywords = "GetVertexsCenter"), Category = "BlueprintExpansionPack|Math")
 	static FVector GetVertexsCenter(TArray<FVector> Vertexs);
-	UFUNCTION(BlueprintCallable, meta = (DisplayName = "IsPowerOfTwo", ToolTips = "判断整型是否2的幂次方", Keywords = "IsPowerOfTwo"), Category = "BlueprintExpansionPack|Math")
-		static bool IsPowerOfTwo(int n);
-	
+	UFUNCTION(BlueprintCallable, meta = (BlueprintPure,DisplayName = "IsPowerOfTwo", ToolTips = "判断整型是否2的幂次方", Keywords = "IsPowerOfTwo"), Category = "BlueprintExpansionPack|Math")
+		static bool IsPowerOfTwo(int n) ;
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "CreateAssetFormClass", ToolTips = "CreateAssetFormClass", Keywords = "IsPowerOfTwo"), Category = "BlueprintExpansionPack|Math")
+	static UObject* CreateAssetFormClass(FString Dir,FString AssetName,TSubclassOf<UObject> ObjectClass);
 
 	/*Dialog Function*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "SelectFolder", ToolTips = "SelectFolder", Keywords = "SelectFolder"), Category = "DDToolsTest")
