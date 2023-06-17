@@ -14,7 +14,7 @@ UDDToolsBPLibrary::UDDToolsBPLibrary(const FObjectInitializer& ObjectInitializer
 }
 
 #pragma optimize("", off)
-
+ 
 //设置材质变量的名字和组信息
 void UDDToolsBPLibrary::SetMaterialParameterName(UMaterialExpressionScalarParameter* ME, FName Name, FName Group)
 {
@@ -258,6 +258,30 @@ TArray<FAssetData> UDDToolsBPLibrary::GetAllAssetDataOfClass(UClass* Class, FStr
 }
 
 
+
+void UDDToolsBPLibrary::ImportLodFromStaticMeshs(UStaticMesh* StaticMesh, TArray<UStaticMesh*> Lods)
+{
+	if (StaticMesh&&Lods.Num()>0)
+	{
+		for (UStaticMesh* item:Lods)
+		{
+			if (item)
+			{
+				FRawMesh TmpRawMesh;
+				item->GetSourceModel(0).LoadRawMesh(TmpRawMesh);
+				if (TmpRawMesh.IsValid())
+				{
+					FStaticMeshSourceModel& NewSourceModel=StaticMesh->AddSourceModel();
+					NewSourceModel.SaveRawMesh(TmpRawMesh);
+				}
+
+			}
+		}
+		StaticMesh->PostEditChange();
+		StaticMesh->MarkPackageDirty();
+		
+	}
+}
 
 void UDDToolsBPLibrary::RemoveStaticMeshLod(UStaticMesh* Mesh, int LodNum)
 {

@@ -68,7 +68,8 @@ public class DDTools : ModuleRules
 				"DeveloperSettings",
 				"BlueprintEditorLibrary",
 				"MaterialEditorTools",
-				"AssetRegistry"
+				"AssetRegistry",
+                "RawMesh"
 
 				// ... add private dependencies that you statically link with here ...	
 			}

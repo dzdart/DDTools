@@ -17,6 +17,7 @@
 #include "AssetRegistryModule.h"
 #include "Engine/Classes/Engine/ObjectLibrary.h "
 #include "FileHelpers.h"
+#include "Runtime/RawMesh/Public/RawMesh.h"
 
 #include "DDToolsBPLibrary.generated.h"
 
@@ -82,6 +83,9 @@ public:
 	/*UFUNCTION(BlueprintCallable, meta = (DisplayName = "读取文件到动态贴图", ToolTips = "从本地硬盘读取png文件到动态贴图", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
 	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);*/
 
+	/*StaticMeshFunction*/
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "ImportLodFromStaticMeshs", ToolTips = "给静态网格体添加指定网格体的LOD", Keywords = "RemoveStaticMeshLod"), Category = "BlueprintExpansionPack|StaticMesh")
+		static void ImportLodFromStaticMeshs(UStaticMesh* StaticMesh,TArray<UStaticMesh*> Lods);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "RemoveStaticMeshLod", ToolTips = "移除静态网格体指定LOD", Keywords = "RemoveStaticMeshLod"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void RemoveStaticMeshLod(UStaticMesh* Mesh,int LodNum);
 
