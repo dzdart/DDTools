@@ -23,7 +23,7 @@
 		{
 			"Name": "MaterialEditorTools",
 			"Type": "Runtime",
-			"LoadingPhase": "PreLoadingScreen"
+			"LoadingPhase": "Default"
 		}
 			
 	]

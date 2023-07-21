@@ -3,6 +3,7 @@
 #include "DDTools.h"
 #include "GenMenu/GenLevelEditorMenu.h"
 #include "GenMenu/ContentBrowserMenu.h"
+#include "GenMenu/GenMaterialMenu.h"
 #include "Developer/AssetTools/Public/AssetToolsModule.h"
 
 
@@ -28,7 +29,9 @@ void FDDToolsModule::StartupModule()
 {
 
 	GenLevelEditorMenu::Get().GenMenu();
+	GenMaterialMenu::Get().GenMenu();
 	ContentBrowserMenu::Get().GenMenu();
+
 
 	FCoreDelegates::OnFEngineLoopInitComplete.AddRaw(this,&FDDToolsModule::MountInit);
 

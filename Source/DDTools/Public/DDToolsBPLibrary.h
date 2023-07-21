@@ -18,7 +18,7 @@
 #include "Engine/Classes/Engine/ObjectLibrary.h "
 #include "FileHelpers.h"
 #include "Runtime/RawMesh/Public/RawMesh.h"
-
+#include "Editor/UnrealEd/Public/ObjectTools.h"
 #include "DDToolsBPLibrary.generated.h"
 
 /* 
@@ -79,6 +79,8 @@ public:
 	static void SetAssetDirct(UObject* Asset, bool& ret);
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "获取文件夹下指定类的所有AssetData", ToolTips = "获取文件夹下指定类的所有AssetData", Keywords = "GetAllAssetDataOfClass"), Category = "BlueprintExpansionPack|File")
 	static TArray<FAssetData> GetAllAssetDataOfClass(UClass* Class,FString Path);
+	UFUNCTION(BlueprintCallable, meta = (DisplayName = "替换引用", ToolTips = "替换引用", Keywords = "RepleaseRefrence"), Category = "BlueprintExpansionPack|File")
+		static void RepleaseRefrence(TArray<UObject*> Objects);
 
 	/*UFUNCTION(BlueprintCallable, meta = (DisplayName = "读取文件到动态贴图", ToolTips = "从本地硬盘读取png文件到动态贴图", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|File")
 	static bool LoadPngToDyT2d(const FString& ImagePath, UTexture2DDynamic* InDyTexture, float& Width, float Height);*/
@@ -98,7 +100,7 @@ public:
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "DDToolsTest", ToolTips = "DDToolsTest", Keywords = "LoadPNGToTexture2DDynamic"), Category = "BlueprintExpansionPack|StaticMesh")
 	static void DDToolsTest(FString Message);
 
-	/*OtherFunction*/
+	/*MathFunction*/
 	UFUNCTION(BlueprintCallable, meta = (DisplayName = "GetVertexsCenter", ToolTips = "获取N个顶点坐标的中心点", Keywords = "GetVertexsCenter"), Category = "BlueprintExpansionPack|Math")
 	static FVector GetVertexsCenter(TArray<FVector> Vertexs);
 	UFUNCTION(BlueprintCallable, meta = (BlueprintPure,DisplayName = "IsPowerOfTwo", ToolTips = "判断整型是否2的幂次方", Keywords = "IsPowerOfTwo"), Category = "BlueprintExpansionPack|Math")

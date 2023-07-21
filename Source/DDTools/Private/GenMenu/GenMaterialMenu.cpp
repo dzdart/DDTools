@@ -23,5 +23,9 @@ GenMaterialMenu& GenMaterialMenu::Get()
 
 void GenMaterialMenu::GenMenu()
 {
+	/*UAssetEditorSubsystem* AssetEditorSubsystem = GEditor->GetEditorSubsystem<UAssetEditorSubsystem>();
+	AssetEditorSubsystem->FindEditorsForAsset(OldAsset);*/
+	//UToolMenus* ToolMenus = UToolMenus::Get();
+
 
 }

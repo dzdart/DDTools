@@ -257,6 +257,16 @@ TArray<FAssetData> UDDToolsBPLibrary::GetAllAssetDataOfClass(UClass* Class, FStr
 	return ret;
 }
 
+void UDDToolsBPLibrary::RepleaseRefrence(TArray<UObject*> Objects)
+{
+	for (UObject* item:Objects)
+	{
+		FString CollectionName;
+		ObjectTools::ShowReferencedObjs(item, CollectionName);
+		UE_LOG(LogTemp,Log,TEXT("UDDToolsBPLibrary::RepleaseRefrence:%s"),*CollectionName);
+	}
+}
+
 
 
 void UDDToolsBPLibrary::ImportLodFromStaticMeshs(UStaticMesh* StaticMesh, TArray<UStaticMesh*> Lods)
